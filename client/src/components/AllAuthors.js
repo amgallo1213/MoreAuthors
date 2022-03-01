@@ -4,7 +4,7 @@ import {Link} from '@reach/router';
 
 const AllAuthors = (props) => {
    
-    const [authorList, setAuthorList] =  useState([])
+    const [authorList, setAuthorList] =  useState([]);
 
     useEffect(() => {
         axios.get("http://localhost:8000/api/authors")
@@ -18,22 +18,37 @@ const AllAuthors = (props) => {
             })
     }, [])
 
+    const deleteHandler = (id) => {
+        
+        axios.delete(`http://localhost:8000/api/authors/${id}`)
+            .then((res) => {
+                console.log(res.data);
+                setAuthorList(authorList.filter((author)=>author._id !== id))
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+    }
+
     return(
         <div>
             
         {
             authorList.map((author, index) => (
                 <div key={index} class="author">
-                    <Link to={`/author/${author._id}`}>
+                    <Link to={`/authors/${author._id}`}>
                     {author.name}
                     </Link>
-                    <p><Link to ={`/author/edit/${author._id}`}>Edit |</Link>
-                    <Link to ={`/author/delete/${author._id}`}> Delete</Link></p>
+                    <p><Link to ={`/authors/edit/${author._id}`}>Edit |</Link>
+                    <button onClick={(e)=>deleteHandler(author._id)}>Delete</button>
+                    </p>
                 </div>
             ))
+           
         }
+        :null
             <h3>Add An Author</h3>
-            <p><Link to ={`/author/create`}>Create</Link></p>
+            <p><Link to ={`/authors/create`}>Create</Link></p>
         </div>)
 
 }

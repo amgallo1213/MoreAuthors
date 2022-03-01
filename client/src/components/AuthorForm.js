@@ -3,36 +3,36 @@ import axios from 'axios';
 import { Link, navigate } from '@reach/router';
 
 const AuthorForm = (props) => {
-    const {authors, setAuthors} = props; 
+    const [errors, setErrors] = useState({});
     const [name, setName] = useState("");
     const onSubmitHandler = (e) => {
-        console.log("hello");
         e.preventDefault();
-        axios.post('http://localhost:8000/api/author', {
+        axios.post('http://localhost:8000/api/authors/create', {
             name
         })
-        .then(res => {
-            console.log(res);
+        .then((res) => {
             console.log(res.data);
-            setAuthors([...authors, res.data]);
             navigate("/authors")
         })
-        .catch(err => console.log(err))
-    }
+        .catch((err) => {
+            console.log(err);
+            setErrors(err.response.data.errors);
+        })
 
     return (
         <div>
-            <form onSubmit={onSubmitHandler}>
+            <form onSubmit={onSubmitHandler} >
 
                 <p>
                     <label>Name: </label>
                     <input name="name" value={name} type="text" onChange= {(e) =>setName(e.target.value)}/> 
                 </p>
-                <button type="submit">Add Author</button>
+                {errors.name ? <span>{errors.name.message}</span> : null}
+                <button>Add Author</button>
             </form>
             <p><Link to="/authors">Home</Link></p>
         </div>
     )
 }
-
+}
 export default AuthorForm;

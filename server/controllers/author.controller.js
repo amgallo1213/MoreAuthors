@@ -1,6 +1,18 @@
-const Author = require('../models/author.model.js');
+const Author = require("../models/author.model");
+
 
 module.exports = {
+    findAllAuthors: (req, res) => {
+        Author.find({})
+            .then((allAuthors) => {
+                console.log(allAuthors);
+                res.json(allAuthors)  
+            })
+            .catch((err) => {
+                console.log("Find All Authors failed.");
+                res.json({message: "Something went wrong in Find All Authors", error: err})
+            })
+    },
     createAuthor: (req, res) => {
         Author.create(req.body)
             .then((newAuthor) => {
@@ -15,24 +27,13 @@ module.exports = {
     findOneAuthor: (req, res) => {
         Author.findOne({_id: req.params.id})
             .then((oneAuthor) => {
-                console.log(oneAuthor);
+                console.log(oneAuthor);  
                 res.json(oneAuthor)
             })
             .catch((err) => {
                 console.log("Find One Author has failed");
                 res.json({message: "Something went wrong in Find One Author", error: err})
             })
-    },
-    findAllAuthors: (req, res) => {
-        Author.find({})
-        .then((allAuthors) => {
-            console.log(allAuthors);
-            res.json(allAuthors)
-        })
-        .catch((err) => {
-            console.log("Find All Authors failed.");
-            res.json({message: "Something went wrong", error: err})
-        })
     },
     updateOneAuthor: (req, res) => {
         Author.findOneAndUpdate({_id: req.params.id}, 

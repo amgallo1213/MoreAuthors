@@ -5,9 +5,10 @@ import {Link} from '@reach/router';
 const OneAuthor = (props) => {
     const {id} = props;
     const [singleAuthor, setSingleAuthor] = useState({});
+    console.log("OneAuthor");
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/author/${id}`)
+        axios.get(`http://localhost:8000/api/authors/${id}`)
             .then((res) => {
                 console.log(res);
                 console.log(res.data);
@@ -20,8 +21,8 @@ const OneAuthor = (props) => {
 
     return(
         <div>
-            <header><h1>{singleAuthor.name}</h1></header>
-            <p><Link to="/author/edit/:id">Edit</Link>
+            <header><h2>{singleAuthor.name}</h2></header>
+            <p><Link to="/authors/edit/:id">Edit</Link>
             <Link to="/authors">Home</Link></p>
         </div>
 

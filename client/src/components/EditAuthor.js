@@ -5,55 +5,53 @@ import { Link, navigate } from '@reach/router';
 const EditAuthor = (props) => {
 
     const {id} = (props);
+    const [errors, setErrors] = useState({});
     const [name, setName] = useState("");
     
-
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/author/${id}`)
+        axios.get(`http://localhost:8000/api/authors/${id}`)
             .then((res) => {
-                console.log(res);
                 console.log(res.data);
-                setName(res.data.title);
+                setName(res.data.name);
             })
             .catch((err) => {
-                console.log(err)
-            })
+                console.log(err);
+                navigate("/authors/error");
+            });
     }, [id])
 
-const editHandler = (e) => {
+const updateSubmitHandler = (e) => {
     e.preventDefault();
-
-    axios.put(`http://localhost:8000/api/author/${id}`, 
-    {
+    const putEditedName = {
         name
-    })
-    .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        navigate("/");
-    })
-    .catch ((err) => {
-        console.log(err)
-    })
+    };
+        axios.put(`http://localhost:8000/api/authors/edit/${id}`, putEditedName) 
+            .then((res) => {
+                console.log(res.data);
+                navigate("/authors");
+        })
+            .catch ((err) => {
+                console.log(err);
+                setErrors(err.response.data.errors);
+        })
 }
 
     return(
         <div>
-            <form onSubmit={editHandler}>
+            <h1>Edit Your Author</h1>
+            <form onSubmit={updateSubmitHandler}>
                 <p>
                     <label>Name</label><br/>
-                    <input value={name} type="text" onChange={(e)=>setName(e.target.value)}/>
+                    <input value={name} name="name" onChange={(e)=>setName(e.target.value)}/>
                 </p>
-                <button type="submit">Edit Name</button>
+                {errors.name ? <span>{errors.name.message}</span> : null}
+                <button  onClick={(e) => navigate("/authors")}>Edit Name</button>
             </form>
-            <Link to="/">Home</Link>
+            <Link to="/authors">Home</Link>
 
         </div>
     )
 }
-
-
-
 
 export default EditAuthor;
 
